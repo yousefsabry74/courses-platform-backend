@@ -5,6 +5,7 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "token is required" });
   }
   const token = userAuth.split(" ")[1];
+
   try {
     const verify = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.currentUser = verify;
@@ -16,7 +17,7 @@ const verifyToken = (req, res, next) => {
 const allowedTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.currentUser.role)) {
-      res.status(403).json({ message: "unauthorized access" });
+      return res.status(403).json({ message: "unauthorized access" });
     }
     next();
   };

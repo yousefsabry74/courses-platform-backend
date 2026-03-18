@@ -2,6 +2,7 @@ const { User } = require("../model/userSchema");
 const { registerValidation } = require("../validation/user.validation");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const blacklist = [];
 var jwt = require("jsonwebtoken");
 const getAllUsers = async (req, res) => {
   const page = Number(req.query.page) || 1;
@@ -66,4 +67,4 @@ const login = async (req, res) => {
   res.status(200).json({ message: "succes", token });
 };
 
-module.exports = { getAllUsers, register, login };
+module.exports = { getAllUsers, register, login, };
