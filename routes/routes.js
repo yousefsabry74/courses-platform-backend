@@ -8,9 +8,11 @@ const {
   postAllCourses,
   patchCousrs,
   deleteCourse,
+  getSingleCourse,
 } = require("../controller/coursecontroller");
 
 router.get("/", asyncHandler(getAllCourses));
+router.get("/course", asyncHandler(getSingleCourse));
 router.post("/", verifyToken, allowedTo("admin"), asyncHandler(postAllCourses));
 
 router.patch(

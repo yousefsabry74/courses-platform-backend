@@ -8,17 +8,20 @@ const app = express();
 const dotenv = require("dotenv");
 const cors = require("cors");
 app.use(cors());
-const xss = require("xss-clean");
-app.use(xss());
 dotenv.config();
 const port = process.env.PORT || 8000;
 const db = process.env.DBURL;
 
 app.use(express.json());
+mongoose
+  .connect(db)
+  .then(() => {
+    console.log("Connected Successfully");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
-mongoose.connect(db).then(() => {
-  console.log("Connected Successfully");
-});
 app.use("/api/courses", courseRouter);
 app.use("/api/users", userRouter);
 app.use(errorHandler);

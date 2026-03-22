@@ -3,12 +3,42 @@ const {
   postCoursesValidator,
 } = require("../validation/course.validation");
 const { Course } = require("../model/courseSchema");
+const { options } = require("joi");
 const getAllCourses = async (req, res) => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
   const courses = await Course.find().skip(skip).limit(limit);
   res.status(200).send(courses);
+};
+const getSingleCourse = async (req, res) => {
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 5;
+  const skip = (page - 1) * limit;
+  const { price, maxPrice, minPrice, sort, title } = req.query;
+  const filter = {};
+  if (price) {
+    filter.price = Number(price);
+  } else {
+    filter.price = {};
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+    if (minPrice) filter.price.$gte = Number(minPrice);
+  }
+  if (title) {
+    filter.title = { $regex: title, $options: "i" };
+  }
+  const sortOption = { createdAt: -1 };
+  if (sort) {
+    const order = sort.startsWith("-") ? -1 : 1;
+    const field = sort.startsWith("-") ? sort.slice(1) : sort;
+    sortOption[field] = order;
+  }
+  const procducts = await Course.find(filter).skip(skip).sort(sortOption);
+  res.status(200).json({
+    totalResult: procducts.length,
+    status: "success",
+    data: procducts,
+  });
 };
 const postAllCourses = async (req, res) => {
   const { error, value } = postCoursesValidator(req.body);
@@ -62,4 +92,10 @@ const deleteCourse = async (req, res) => {
     message: "course have been deleted",
   });
 };
-module.exports = { getAllCourses, postAllCourses, patchCousrs, deleteCourse };
+module.exports = {
+  getAllCourses,
+  postAllCourses,
+  patchCousrs,
+  deleteCourse,
+  getSingleCourse,
+};
