@@ -24,7 +24,7 @@ A RESTful API backend for an online courses platform built with Node.js, Express
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/courses-platform-backend.git
+   git clone https://github.com/yousefsabry74/courses-platform-backend.git
    cd courses-platform-backend
    ```
 
