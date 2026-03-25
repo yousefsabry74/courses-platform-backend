@@ -1,10 +1,29 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
+const { User } = require("./userSchema");
 const { Schema } = mongoose;
 
 const courseSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
+  quizzes: [
+    {
+      question: String,
+      options: [String],
+      correctAnswer: String,
+    },
+  ],
+  reviews: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: User,
+      },
+      ratings: { type: Number, min: 1, max: 5 },
+      comment: String,
+    },
+  ],
 });
 const Course = mongoose.model("Course", courseSchema);
 module.exports = { Course };

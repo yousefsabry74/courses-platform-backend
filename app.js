@@ -1,3 +1,5 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const Joi = require("joi");
 const errorHandler = require("./middleware/errorHandler");
@@ -5,10 +7,8 @@ const mongoose = require("mongoose");
 const courseRouter = require("./routes/routes");
 const userRouter = require("./routes/user");
 const app = express();
-const dotenv = require("dotenv");
 const cors = require("cors");
 app.use(cors());
-dotenv.config();
 const port = process.env.PORT || 8000;
 const db = process.env.DBURL;
 

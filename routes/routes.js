@@ -6,20 +6,26 @@ const router = express.Router();
 const {
   getAllCourses,
   postAllCourses,
-  patchCousrs,
+  patchCourses,
   deleteCourse,
   getSingleCourse,
+  generateQuizForCourse,
 } = require("../controller/coursecontroller");
 
 router.get("/", asyncHandler(getAllCourses));
 router.get("/course", asyncHandler(getSingleCourse));
 router.post("/", verifyToken, allowedTo("admin"), asyncHandler(postAllCourses));
-
+router.post(
+  "/:id/generate-quiz",
+  verifyToken,
+  allowedTo("admin"),
+  asyncHandler(generateQuizForCourse),
+);
 router.patch(
   "/:id",
   verifyToken,
   allowedTo("admin"),
-  asyncHandler(patchCousrs),
+  asyncHandler(patchCourses),
 );
 router.delete(
   "/:id",
