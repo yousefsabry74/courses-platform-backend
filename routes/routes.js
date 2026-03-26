@@ -1,6 +1,7 @@
 const express = require("express");
 const asyncHandler = require("../middleware/asyncHandler");
 const { verifyToken, allowedTo } = require("../middleware/verifytoken");
+const { upload } = require("../controller/covercontroller");
 
 const router = express.Router();
 const {
@@ -11,7 +12,18 @@ const {
   getSingleCourse,
   generateQuizForCourse,
 } = require("../controller/coursecontroller");
-
+router.post(
+  "/course/cover",
+  verifyToken,
+  upload.single("courseCover"),
+  allowedTo("admin"),
+  asyncHandler(async (req, res) => {
+    res.json({
+      message: "uploaded successfully",
+      data: req.file,
+    });
+  }),
+);
 router.get("/", asyncHandler(getAllCourses));
 router.get("/course", asyncHandler(getSingleCourse));
 router.post("/", verifyToken, allowedTo("admin"), asyncHandler(postAllCourses));

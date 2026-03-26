@@ -24,6 +24,12 @@ const courseSchema = new Schema({
       comment: String,
     },
   ],
+  courseCover: {
+    coverImage: {
+      type: String,
+      default: "uploads/covers/cover.png",
+    },
+  },
 });
 const Course = mongoose.model("Course", courseSchema);
 module.exports = { Course };

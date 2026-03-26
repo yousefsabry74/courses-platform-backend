@@ -9,9 +9,9 @@ const userRouter = require("./routes/user");
 const app = express();
 const cors = require("cors");
 app.use(cors());
+app.use("/uploads", express.static("uploads"));
 const port = process.env.PORT || 8000;
 const db = process.env.DBURL;
-
 app.use(express.json());
 mongoose
   .connect(db)
