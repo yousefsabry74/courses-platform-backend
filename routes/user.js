@@ -7,12 +7,22 @@ const {
   register,
   login,
 } = require("../controller/usercontroller");
+const rateLimit = require("express-rate-limit");
+
 const router = express.Router();
-router.get("/", verifyToken, asyncHandler(getAllUsers));
+router.get("/", verifyToken, allowedTo("admin"), asyncHandler(getAllUsers));
 router.post("/register", asyncHandler(register));
-router.post("/login", asyncHandler(login));
+router.post(
+  "/login",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 5,
+  }),
+  asyncHandler(login),
+);
 router.post(
   "/avatar",
+  verifyToken,
   upload.single("avatar"),
   asyncHandler((req, res) => {
     res.status(200).json({ message: "uploaded successfully", data: req.file });
