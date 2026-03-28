@@ -23,7 +23,7 @@ const getSingleCourse = async (req, res) => {
   const filter = {};
   if (price) {
     filter.price = Number(price);
-  } else {
+  } else if (minPrice || maxPrice) {
     filter.price = {};
     if (maxPrice) filter.price.$lte = Number(maxPrice);
     if (minPrice) filter.price.$gte = Number(minPrice);

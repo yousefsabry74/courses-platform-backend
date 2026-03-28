@@ -1,9 +1,12 @@
 var multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const avatarsDir = path.join(__dirname, "../uploads/avatars");
+fs.mkdirSync(avatarsDir, { recursive: true });
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = require("path");
-
-    cb(null, path.join(__dirname, "../uploads/avatars"));
+    cb(null, avatarsDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = `${Date.now()}.${file.mimetype.split("/")[1]}`;
