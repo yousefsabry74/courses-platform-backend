@@ -6,16 +6,22 @@ A RESTful API backend for an online courses platform built with Node.js, Express
 
 ## 🛠️ Tech Stack
 
-| Technology                    | Version | Purpose                       |
-| ----------------------------- | ------- | ----------------------------- |
-| Node.js + Express.js          | v5.x    | HTTP Server & Routing         |
-| MongoDB + Mongoose            | v9.x    | Database & ODM                |
-| JSON Web Token (JWT)          | v9.x    | Authentication                |
-| bcrypt                        | v6.x    | Password Hashing              |
-| Joi                           | v18.x   | Input Validation              |
-| Google Generative AI (Gemini) | v0.24.x | AI Features                   |
-| dotenv                        | v17.x   | Environment Variables         |
-| CORS                          | v2.x    | Cross-Origin Resource Sharing |
+| Technology                    | Version  | Purpose                       |
+| ----------------------------- | -------- | ----------------------------- |
+| Node.js + Express.js          | v5.x     | HTTP Server & Routing         |
+| MongoDB + Mongoose            | v9.x     | Database & ODM                |
+| JSON Web Token (JWT)          | v9.x     | Authentication                |
+| bcrypt                        | v6.x     | Password Hashing              |
+| Joi                           | v18.x    | Input Validation              |
+| Google Generative AI (Gemini) | v0.24.x  | AI Features                   |
+| Multer                        | v2.x     | File Uploads                  |
+| Helmet                        | v8.x     | HTTP Security Headers         |
+| express-rate-limit            | v8.x     | Rate Limiting                 |
+| express-mongo-sanitize        | v2.x     | NoSQL Injection Prevention    |
+| express-xss-sanitizer         | v2.x     | XSS Attack Prevention         |
+| hpp                           | v0.2.x   | HTTP Parameter Pollution Guard|
+| dotenv                        | v17.x    | Environment Variables         |
+| CORS                          | v2.x     | Cross-Origin Resource Sharing |
 
 ---
 
@@ -54,25 +60,27 @@ A RESTful API backend for an online courses platform built with Node.js, Express
 
 ### Courses — `/api/courses`
 
-| Method | Endpoint             | Auth | Role  | Description                     |
-| ------ | -------------------- | ---- | ----- | ------------------------------- |
-| GET    | `/`                  | ❌   | Any   | Get all courses (Paginated)     |
-| GET    | `/course`            | ❌   | Any   | Search & filter courses         |
-| POST   | `/`                  | ✅   | Admin | Create a new course             |
-| PATCH  | `/:id`               | ✅   | Admin | Update a course                 |
-| DELETE | `/:id`               | ✅   | Admin | Delete a course                 |
-| POST   | `/:id/generate-quiz` | ✅   | Admin | AI-generate a quiz for a course |
-
-### Users — `/api/users`
-
-| Method | Endpoint    | Auth | Role | Description               |
-| ------ | ----------- | ---- | ---- | ------------------------- |
-| POST   | `/register` | ❌   | Any  | Register a new user       |
-| POST   | `/login`    | ❌   | Any  | Login and receive JWT     |
-| GET    | `/`         | ✅   | Any  | Get all users (Paginated) |
+| Method | Endpoint          | Auth | Role  | Description                          |
+| ------ | ----------------- | ---- | ----- | ------------------------------------ |
+| GET    | `/`               | ❌   | Any   | Get all courses (Paginated)          |
+| GET    | `/course`         | ❌   | Any   | Search & filter courses              |
+| POST   | `/`               | ✅   | Admin | Create a new course                  |
+| POST   | `/course/cover`   | ✅   | Admin | Upload a cover image for a course    |
+| PATCH  | `/:id`            | ✅   | Admin | Update a course                      |
+| DELETE | `/:id`            | ✅   | Admin | Delete a course                      |
+| POST   | `/:id/generate-quiz` | ✅ | Admin | AI-generate a quiz for a course   |
 
 > **Query Parameters for `GET /api/courses/course`:**
 > `title`, `price`, `minPrice`, `maxPrice`, `sort`, `page`, `limit`
+
+### Users — `/api/users`
+
+| Method | Endpoint    | Auth | Role  | Description                    |
+| ------ | ----------- | ---- | ----- | ------------------------------ |
+| POST   | `/register` | ❌   | Any   | Register a new user            |
+| POST   | `/login`    | ❌   | Any   | Login and receive JWT          |
+| GET    | `/`         | ✅   | Admin | Get all users (Paginated)      |
+| POST   | `/avatar`   | ✅   | Any   | Upload a profile avatar image  |
 
 ---
 
@@ -84,10 +92,12 @@ A RESTful API backend for an online courses platform built with Node.js, Express
 - **Role-Based Access Control (RBAC)** — Supports `user` and `admin` roles
 - **Password hashing** with bcrypt (10 salt rounds)
 - Password field is **never exposed** in API responses (`select: false`)
+- **Login rate limiting** — Max 5 attempts per 15 minutes per IP
 
 ### 📚 Course Management
 
 - Full **CRUD** operations on courses
+- **Course cover image upload** via Multer (`/api/courses/course/cover`)
 - **Advanced filtering** by title (case-insensitive), exact price, or price range (minPrice/maxPrice)
 - **Sorting** support (ascending/descending on any field)
 - **Pagination** on all list endpoints
@@ -101,11 +111,17 @@ A RESTful API backend for an online courses platform built with Node.js, Express
 
 - Register with username, email, password, age, and role
 - Password excluded from all responses automatically
+- **Avatar image upload** via Multer (`/api/users/avatar`)
 
 ### 🔒 Security
 
-- JWT verification middleware on all protected routes
-- Role-based middleware guards admin-only operations
+- **Helmet** — Sets secure HTTP response headers
+- **Rate Limiting** — Global: 100 req/15min; Login endpoint: 5 req/15min
+- **NoSQL Injection Prevention** via `express-mongo-sanitize`
+- **XSS Prevention** via `express-xss-sanitizer`
+- **HTTP Parameter Pollution Guard** via `hpp`
+- **JWT verification** middleware on all protected routes
+- **Role-based middleware** guards admin-only operations
 - `asyncHandler` wrapper for clean async error propagation
 - Global error handler returning consistent JSON error responses
 - CORS enabled for frontend integration
@@ -143,21 +159,23 @@ A RESTful API backend for an online courses platform built with Node.js, Express
 
 ```
 courses-platform-backend/
-├── app.js                  # Entry point
+├── app.js                      # Entry point & middleware setup
 ├── controller/
-│   ├── coursecontroller.js # Course logic & AI integration
-│   └── usercontroller.js   # Auth & user logic
+│   ├── coursecontroller.js     # Course logic & AI integration
+│   ├── usercontroller.js       # Auth & user logic
+│   ├── covercontroller.js      # Course cover upload (Multer)
+│   └── avatarcontroller.js     # User avatar upload (Multer)
 ├── middleware/
-│   ├── asyncHandler.js     # Async error wrapper
-│   ├── errorHandler.js     # Global error handler
-│   └── verifytoken.js      # JWT & RBAC middleware
+│   ├── asyncHandler.js         # Async error wrapper
+│   ├── errorHandler.js         # Global error handler
+│   └── verifytoken.js          # JWT & RBAC middleware
 ├── model/
-│   ├── courseSchema.js     # Course Mongoose schema
-│   └── userSchema.js       # User Mongoose schema
+│   ├── courseSchema.js         # Course Mongoose schema
+│   └── userSchema.js           # User Mongoose schema
 ├── routes/
-│   ├── routes.js           # Course routes
-│   └── user.js             # User routes
+│   ├── routes.js               # Course routes
+│   └── user.js                 # User routes
 └── validation/
-    ├── course.validation.js # Joi validation for courses
-    └── user.validation.js   # Joi validation for users
+    ├── course.validation.js    # Joi validation for courses
+    └── user.validation.js      # Joi validation for users
 ```
