@@ -27,7 +27,6 @@ const limiter = rateLimit({
   legacyHeaders: false,
   ipv6Subnet: 56,
 });
-app.use(mongoSanitize());
 app.use(limiter);
 app.set("trust proxy", 1);
 app.use(xss(options));
