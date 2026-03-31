@@ -7,6 +7,10 @@ const courseSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
+  lessonNumber: Number,
+  icon: String,
+  available: Boolean,
+  totalSessions: Number,
   quizzes: [
     {
       question: String,

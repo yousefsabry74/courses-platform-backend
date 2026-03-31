@@ -29,9 +29,8 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-
-      required: true,
+      enum: ["student", "teacher"],
+      default: "student",
     },
     createdAt: {
       type: Date,
@@ -41,6 +40,22 @@ const userSchema = new Schema(
     updatedAt: {
       type: Date,
       default: Date.now,
+    },
+    courses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    class: {
+      type: String,
+      required: true,
+    },
+    grade: {
+      type: Number,
+    },
+    displayName: {
+      type: String,
     },
     avatar: {
       type: String,

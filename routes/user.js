@@ -10,7 +10,7 @@ const {
 const rateLimit = require("express-rate-limit");
 
 const router = express.Router();
-router.get("/", verifyToken, allowedTo("admin"), asyncHandler(getAllUsers));
+router.get("/", verifyToken, allowedTo("teacher"), asyncHandler(getAllUsers));
 router.post("/register", asyncHandler(register));
 router.post(
   "/login",

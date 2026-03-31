@@ -21,7 +21,7 @@ const register = async (req, res) => {
   if (error) {
     return res.status(400).json({ message: "invalid input" });
   }
-  const { password, email, role, username } = value;
+  const { password, email, role, username, class: userClass } = value;
   const oldUser = await User.findOne({ email: email }).select("+password");
   if (oldUser) {
     return res.status(400).json({ message: "User Already Exist" });
@@ -32,6 +32,7 @@ const register = async (req, res) => {
     password: hashedPassword,
     role: role,
     username: username,
+    class: userClass,
   });
   const token = jwt.sign(
     { role, username, user: user.id },
@@ -67,4 +68,4 @@ const login = async (req, res) => {
   res.status(200).json({ message: "succes", token });
 };
 
-module.exports = { getAllUsers, register, login, };
+module.exports = { getAllUsers, register, login };

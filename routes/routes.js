@@ -16,7 +16,7 @@ router.post(
   "/course/cover",
   verifyToken,
   upload.single("courseCover"),
-  allowedTo("admin"),
+  allowedTo("teacher"),
   asyncHandler(async (req, res) => {
     res.json({
       message: "uploaded successfully",
@@ -26,23 +26,23 @@ router.post(
 );
 router.get("/", asyncHandler(getAllCourses));
 router.get("/course", asyncHandler(getSingleCourse));
-router.post("/", verifyToken, allowedTo("admin"), asyncHandler(postAllCourses));
+router.post("/", verifyToken, allowedTo("teacher"), asyncHandler(postAllCourses));
 router.post(
   "/:id/generate-quiz",
   verifyToken,
-  allowedTo("admin"),
+  allowedTo("teacher"),
   asyncHandler(generateQuizForCourse),
 );
 router.patch(
   "/:id",
   verifyToken,
-  allowedTo("admin"),
+  allowedTo("teacher"),
   asyncHandler(patchCourses),
 );
 router.delete(
   "/:id",
   verifyToken,
-  allowedTo("admin"),
+  allowedTo("teacher"),
   asyncHandler(deleteCourse),
 );
 

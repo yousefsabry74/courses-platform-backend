@@ -6,8 +6,11 @@ const errorHandler = require("./middleware/errorHandler");
 const mongoose = require("mongoose");
 const courseRouter = require("./routes/routes");
 const userRouter = require("./routes/user");
+const lessonRouter = require("./routes/lessons");
+const SessionRouter = require("./routes/sessions");
+const chatbotRouter = require("./routes/chatbot");
+
 const rateLimit = require("express-rate-limit");
-const mongoSanitize = require("express-mongo-sanitize");
 const app = express();
 const { xss } = require("express-xss-sanitizer");
 const options = {
@@ -46,6 +49,9 @@ mongoose
 
 app.use("/api/courses", courseRouter);
 app.use("/api/users", userRouter);
+app.use("/api/lessons", lessonRouter);
+app.use("/api/chatbot", chatbotRouter);
+
 app.use(errorHandler);
 
 app.listen(port, () => {
