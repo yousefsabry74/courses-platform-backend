@@ -9,6 +9,7 @@ const userRouter = require("./routes/user");
 const lessonRouter = require("./routes/lessons");
 const SessionRouter = require("./routes/sessions");
 const chatbotRouter = require("./routes/chatbot");
+const progressRouter = require("./routes/progress");
 
 const rateLimit = require("express-rate-limit");
 const app = express();
@@ -51,6 +52,7 @@ app.use("/api/courses", courseRouter);
 app.use("/api/users", userRouter);
 app.use("/api/lessons", lessonRouter);
 app.use("/api/chatbot", chatbotRouter);
+app.use("/api/progress", progressRouter);
 
 app.use(errorHandler);
 

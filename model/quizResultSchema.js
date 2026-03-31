@@ -11,4 +11,4 @@ const quizResultSchema = new mongoose.Schema({
   submittedAt: { type: Date, default: Date.now },
 });
 const QuizResult = mongoose.model("QuizResult", quizResultSchema);
-module.exports = { Session };
+module.exports = { QuizResult };
