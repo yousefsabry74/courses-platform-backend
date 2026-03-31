@@ -16,7 +16,7 @@ router.post(
   "/login",
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 5,
+    limit: 15,
   }),
   asyncHandler(login),
 );

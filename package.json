@@ -1,7 +1,7 @@
 {
   "name": "task1",
   "version": "1.0.0",
-  "description": "",
+  "description": "A RESTful API backend for an online courses platform built with Node.js, Express.js, MongoDB, and Google Gemini AI.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,5 +28,13 @@
     "mongoose": "^9.2.4",
     "multer": "^2.1.1",
     "xss": "^1.0.15"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yousefsabry74/courses-platform-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yousefsabry74/courses-platform-backend/issues"
+  },
+  "homepage": "https://github.com/yousefsabry74/courses-platform-backend#readme"
 }
